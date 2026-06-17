@@ -85,6 +85,48 @@ function makeRoom() {
   assert(winner.speedBoost && winner.speedBoost.expiresAt > Date.now(), 'correct answer should immediately grant speed boost');
   const publicState = _test.publicRoomState(room);
   assert(publicState.players.find((p) => p.id === 'winner').speedBoost, 'speed boost should be visible in public player state');
+  _test.clearPostTriviaResult(room);
+})();
+
+(function correctTriviaAnswerDoesNotResumeLoopUntilResultDelayEnds() {
+  const room = makeRoom();
+  _test.startTrivia(room);
+  const correctLabel = room.trivia.correctLabel;
+
+  const beforeAnswer = Date.now();
+  const accepted = _test.handleTriviaAnswer(room, 'winner', correctLabel);
+
+  assert.strictEqual(accepted, true, 'correct answer should be accepted');
+  assert.strictEqual(room.trivia, null, 'trivia should resolve immediately');
+  assert(room.postTriviaResult, 'room should enter a post-trivia result pause');
+  assert.strictEqual(room.interval, null, 'game loop must not restart while trivia result overlay is visible');
+  assert(
+    room.postTriviaResult.resumesAt - beforeAnswer >= _test.constants.TRIVIA_RESULT_SECONDS * 1000 + _test.constants.TRIVIA_RESUME_BUFFER_MS,
+    'server resume should include a safety buffer after the client result display window'
+  );
+
+  _test.resumeAfterTriviaResult(room);
+
+  assert.strictEqual(room.postTriviaResult, null, 'manual resume should clear post-trivia pause state');
+  assert(room.interval, 'game loop should restart only after result delay completes');
+  _test.stopLoop(room);
+})();
+
+(function playerCanChangeWrongTriviaAnswerBeforeCorrectResolution() {
+  const room = makeRoom();
+  _test.startTrivia(room);
+  const correctLabel = room.trivia.correctLabel;
+  const wrongLabel = ['a', 'b', 'c', 'd'].find((label) => label !== correctLabel);
+
+  assert.strictEqual(_test.handleTriviaAnswer(room, 'winner', wrongLabel), true, 'wrong answer should be recorded');
+  assert(room.trivia, 'wrong answer should not resolve trivia immediately');
+  assert.strictEqual(room.trivia.answers.winner, wrongLabel, 'wrong answer should be stored');
+
+  assert.strictEqual(_test.handleTriviaAnswer(room, 'winner', correctLabel), true, 'changed correct answer should be accepted');
+  assert.strictEqual(room.trivia, null, 'changed correct answer should resolve trivia');
+  const winner = room.players.find((p) => p.id === 'winner');
+  assert(winner.speedBoost && winner.speedBoost.expiresAt > Date.now(), 'changed correct answer should grant boost');
+  _test.clearPostTriviaResult(room);
 })();
 
 (function questionPayloadHidesCorrectAnswerUntilResult() {

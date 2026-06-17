@@ -52,7 +52,7 @@ socket.on('triviaQuestion', (data) => {
     questionId: data.questionId,
     timeLimit: data.timeLimit,
     _startMs: Date.now(),
-    _answered: false
+    selectedLabel: null
   };
   triviaTimerInterval = setInterval(() => {
     if (!activeTrivia) { clearInterval(triviaTimerInterval); return; }
@@ -71,8 +71,9 @@ socket.on('triviaQuestion', (data) => {
     btn.textContent = `${opt.label.toUpperCase()}. ${opt.text}`;
     btn.dataset.label = opt.label;
     btn.addEventListener('click', () => {
-      if (activeTrivia?._answered) return;
-      activeTrivia._answered = true;
+      if (!activeTrivia) return;
+      activeTrivia.selectedLabel = opt.label;
+      triviaOptions.querySelectorAll('.trivia-option').forEach((option) => option.classList.remove('selected'));
       socket.emit('triviaAnswer', { questionId: activeTrivia.questionId, label: opt.label });
       btn.classList.add('selected');
     });
@@ -94,14 +95,15 @@ socket.on('triviaResult', (data) => {
   if (data.winnerId) {
     const isMe = data.winnerId === myPlayerId;
     triviaResult.textContent = isMe
-      ? `Correct! You get the powerup.`
-      : `Answer: ${data.correctLabel.toUpperCase()} — you were slower.`;
+      ? `Correct! You get instant speed boost.`
+      : `Answer: ${data.correctLabel.toUpperCase()} — another snake got the instant speed boost.`;
   } else {
     triviaResult.textContent = `Answer: ${data.correctLabel.toUpperCase()} — no one got it.`;
   }
   triviaResult.classList.remove('hidden');
 
-  triviaHideTimeout = setTimeout(() => { triviaOverlay.classList.add('hidden'); }, 3000);
+  const resultDelayMs = Math.max(0, Number(data.resultDisplaySeconds || data.resumeDelaySeconds || 2) * 1000);
+  triviaHideTimeout = setTimeout(() => { triviaOverlay.classList.add('hidden'); }, resultDelayMs);
 });
 
 joinForm.addEventListener('submit', (event) => {
@@ -188,7 +190,7 @@ function renderScoreboard(state) {
     card.className = `player-card${player.id === myPlayerId ? ' you' : ''}${damagedPlayers.has(player.id) ? ' damaged' : ''}`;
     card.style.setProperty('--player-color', player.color);
     const badge = player.id === myPlayerId ? 'You' : `P${player.slot + 1}`;
-    card.innerHTML = `<div class="player-name"><span class="color-dot" style="background:${player.color}; color:${player.color}"></span><span>${escapeHtml(player.name)}</span><span class="badge">${badge}</span>${player.speedBoost && player.speedBoost.expiresAt > Date.now() ? '<span class="speed-badge">⚡</span>' : ''}</div><div class="stats"><span class="stat">Score: ${player.score}</span><span class="stat hearts">Hearts: ${'❤'.repeat(Math.max(0, player.lives))}${player.lives <= 0 ? '0' : ''}</span><span class="stat">Length: ${player.snake.length}</span></div>`;
+    card.innerHTML = `<div class="player-name"><span class="color-dot" style="background:${player.color}; color:${player.color}"></span><span>${escapeHtml(player.name)}</span><span class="badge">${badge}</span>${player.speedBoost && player.speedBoost.expiresAt > Date.now() ? '<span class="speed-badge">⚡ Speed boost active</span>' : ''}</div><div class="stats"><span class="stat">Score: ${player.score}</span><span class="stat hearts">Hearts: ${'❤'.repeat(Math.max(0, player.lives))}${player.lives <= 0 ? '0' : ''}</span><span class="stat">Length: ${player.snake.length}</span></div>`;
     scoreboard.appendChild(card);
   }
 }

@@ -85,6 +85,20 @@ function makeRoom(players) {
   _test.clearTrivia(room);
 })();
 
+(function speedBoostMovesTwoCellsDuringRespawnGrace() {
+  const player = makePlayer('boosted', 0, 7, 11, 'right');
+  const other = makePlayer('other', 1, 24, 18, 'left');
+  const room = makeRoom([player, other]);
+  room.graceTicks = 5;
+  player.speedBoost = { expiresAt: Date.now() + 15000 };
+  room.food = { x: 20, y: 20 };
+
+  _test.tickRoom(room);
+
+  assert.deepStrictEqual(player.snake[0], { x: 9, y: 11 }, 'boosted player should advance two cells even during grace');
+  assert.strictEqual(room.graceTicks, 4, 'grace should still decrement once per tick');
+})();
+
 (function triviaQuestionPayloadDoesNotExposeCorrectAnswer() {
   const question = {
     id: 'q1',

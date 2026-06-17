@@ -18,6 +18,8 @@ const MIN_PLAYERS = 2;
 const MAX_PLAYERS = 4;
 const COUNTDOWN_SECONDS = 3;
 const TRIVIA_TIME_SECONDS = 10;
+const TRIVIA_RESULT_SECONDS = 2;
+const TRIVIA_RESUME_BUFFER_MS = 400;
 const FOODS_PER_POWERUP = 1;
 
 const DIRECTIONS = {
@@ -151,6 +153,8 @@ io.on('connection', (socket) => {
     if (room.players.length === 0) {
       stopLoop(room);
       stopCountdown(room);
+      clearTrivia(room);
+      clearPostTriviaResult(room);
       rooms.delete(room.code);
       return;
     }
@@ -165,6 +169,7 @@ io.on('connection', (socket) => {
       room.foodsEaten = 0;
       room.powerup = null;
       clearTrivia(room);
+      clearPostTriviaResult(room);
       for (const player of room.players) {
         resetPlayerForWaiting(player);
       }
@@ -203,7 +208,8 @@ function createRoom(code) {
     tick: 0,
     foodsEaten: 0,
     powerup: null,
-    trivia: null
+    trivia: null,
+    postTriviaResult: null
   };
 }
 
@@ -226,6 +232,7 @@ function resetRoomForMatch(room) {
   stopLoop(room);
   stopCountdown(room);
   clearTrivia(room);
+  clearPostTriviaResult(room);
   room.tick = 0;
   room.winner = null;
   room.message = '';
@@ -246,6 +253,7 @@ function resetPlayerForWaiting(player) {
   player.direction = config.startDir;
   player.nextDirection = config.startDir;
   player.snake = createStartingSnake(player.slot);
+  player.speedBoost = null;
 }
 
 function createStartingSnake(slot) {
@@ -315,6 +323,7 @@ function tickRoom(room) {
 
   // Update direction for all players
   for (const player of activePlayers) {
+    if (player.speedBoost && player.speedBoost.expiresAt <= Date.now()) player.speedBoost = null;
     if (!isOpposite(player.direction, player.nextDirection)) player.direction = player.nextDirection;
   }
 
@@ -325,9 +334,13 @@ function tickRoom(room) {
     room.graceTicks -= 1;
     for (const player of activePlayers) {
       const vector = DIRECTIONS[player.direction];
-      const head = player.snake[0];
-      const nextHead = { x: head.x + vector.x, y: head.y + vector.y };
-      if (!isOutside(nextHead)) {
+      const boosted = !!(player.speedBoost && player.speedBoost.expiresAt > Date.now());
+      const steps = boosted ? 2 : 1;
+
+      for (let step = 0; step < steps; step += 1) {
+        const head = player.snake[0];
+        const nextHead = { x: head.x + vector.x, y: head.y + vector.y };
+        if (isOutside(nextHead)) break;
         if (sameCell(nextHead, room.food)) {
           player.score += 1;
           room.foodsEaten += 1;
@@ -679,6 +692,11 @@ function clearTrivia(room) {
   room.trivia = null;
 }
 
+function clearPostTriviaResult(room) {
+  if (room.postTriviaResult?.timer) clearTimeout(room.postTriviaResult.timer);
+  room.postTriviaResult = null;
+}
+
 function triggerTriviaIfReady(room) {
   if (!room.powerup && !room.trivia && room.status === 'playing' && room.foodsEaten >= FOODS_PER_POWERUP) {
     room.foodsEaten = 0;
@@ -690,9 +708,8 @@ function triggerTriviaIfReady(room) {
 
 function handleTriviaAnswer(room, playerId, label) {
   if (!room || room.status !== 'playing') return false;
-  if (!room.trivia || room.trivia.responded.has(playerId)) return false;
+  if (!room.trivia || !['a', 'b', 'c', 'd'].includes(label)) return false;
   room.trivia.answers[playerId] = label;
-  room.trivia.responded.add(playerId);
   if (label === room.trivia.correctLabel) resolveTrivia(room);
   return true;
 }
@@ -708,7 +725,6 @@ function startTrivia(room) {
   room.trivia.correctLabel = question.correct_answer;
   room.trivia.answers = {};
   room.trivia.timer = null;
-  room.trivia.responded = new Set();
 
   io.to(room.code).emit('triviaQuestion', buildTriviaQuestionPayload(question));
 
@@ -737,10 +753,13 @@ function resolveTrivia(room) {
   }
   // If nobody answered correctly → no winner, no powerup
 
+  const resumeDelaySeconds = TRIVIA_RESULT_SECONDS + (TRIVIA_RESUME_BUFFER_MS / 1000);
   io.to(room.code).emit('triviaResult', {
     questionId: room.trivia.questionId,
     winnerId,
-    correctLabel
+    correctLabel,
+    resultDisplaySeconds: TRIVIA_RESULT_SECONDS,
+    resumeDelaySeconds
   });
 
   room.powerup = null;
@@ -758,11 +777,30 @@ function resolveTrivia(room) {
   const alive = room.players.filter((p) => p.lives > 0);
   if (alive.length >= MIN_PLAYERS && room.status !== 'ended') {
     room.message = winnerId
-      ? `${getPlayerById(room, winnerId)?.name || 'Someone'} won the trivia and gets instant speed boost!`
+      ? `${getPlayerById(room, winnerId)?.name || 'Someone'} won trivia and gets instant speed boost!`
       : 'No correct answer — no powerup this round.';
-    startLoop(room);
+    clearPostTriviaResult(room);
+    const resumeDelayMs = TRIVIA_RESULT_SECONDS * 1000 + TRIVIA_RESUME_BUFFER_MS;
+    room.postTriviaResult = {
+      resumesAt: Date.now() + resumeDelayMs,
+      timer: setTimeout(() => resumeAfterTriviaResult(room), resumeDelayMs)
+    };
     broadcast(room);
   }
+}
+
+function resumeAfterTriviaResult(room) {
+  if (!room.postTriviaResult) return false;
+  clearPostTriviaResult(room);
+
+  const alive = room.players.filter((p) => p.lives > 0);
+  if (room.status === 'playing' && !room.trivia && alive.length >= MIN_PLAYERS) {
+    startLoop(room);
+    broadcast(room);
+    return true;
+  }
+  broadcast(room);
+  return false;
 }
 
 function getPlayerById(room, playerId) {
@@ -785,9 +823,12 @@ module.exports = {
     tickRoom,
     startTrivia,
     resolveTrivia,
+    resumeAfterTriviaResult,
     handleTriviaAnswer,
     triggerTriviaIfReady,
     clearTrivia,
+    clearPostTriviaResult,
+    stopLoop,
     buildTriviaQuestionPayload,
     publicRoomState,
     allSnakeCells,
@@ -804,6 +845,8 @@ module.exports = {
       MAX_PLAYERS,
       COUNTDOWN_SECONDS,
       TRIVIA_TIME_SECONDS,
+      TRIVIA_RESULT_SECONDS,
+      TRIVIA_RESUME_BUFFER_MS,
       FOODS_PER_POWERUP
     }
   }

@@ -23,7 +23,10 @@ includesAll(html, [
   'How it works',
   'Start playing',
   'countdownOverlay',
-  'countdownNumber'
+  'countdownNumber',
+  'controls-card',
+  'Arrow keys / WASD',
+  'Change trivia answer before time runs out'
 ], 'index.html');
 
 includesAll(css, [
@@ -34,6 +37,8 @@ includesAll(css, [
   '.player-card.damaged',
   '.countdown-overlay',
   '.countdown-number',
+  '.controls-card',
+  '.control-pill',
   '@media (prefers-reduced-motion: reduce)'
 ], 'style.css');
 

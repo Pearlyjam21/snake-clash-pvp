@@ -12,5 +12,9 @@ assert.match(game, /clearTimeout\(triviaHideTimeout\)/, 'new trivia questions sh
 assert(game.includes('drawPowerup'), 'game.js should draw visible powerups from public game state');
 assert(game.includes('state.powerup'), 'drawGame should use state.powerup');
 assert(!game.includes('activeTrivia = data;'), 'client should not store raw trivia payload with hidden/server-only fields');
+assert(!game.includes('if (activeTrivia?._answered) return;'), 'client should allow changing trivia answer while prompt remains active');
+assert.match(game, /querySelectorAll\('\.trivia-option'\)/, 'client should update selected trivia option styling when answer changes');
+assert(game.includes('instant speed boost'), 'trivia result copy should tell the winner the speed boost is immediate');
+assert(game.includes('⚡ Speed boost active'), 'scoreboard should label active speed boost clearly, not only show an icon');
 
 console.log('frontend regression tests ok');

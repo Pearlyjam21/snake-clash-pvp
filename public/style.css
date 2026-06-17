@@ -148,6 +148,30 @@ button.secondary {
   gap: 12px;
   margin-bottom: 16px;
 }
+.controls-card {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+  margin: 0 0 16px;
+  padding: 12px;
+  border: 1.5px solid var(--border);
+  border-radius: 18px;
+  background: #fffdf7;
+  box-shadow: 0 10px 24px rgba(80, 52, 21, 0.08);
+}
+.control-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 10px;
+  border-radius: 999px;
+  background: #fbf6ea;
+  color: var(--muted);
+  font-size: 0.86rem;
+  font-weight: 700;
+}
+.control-pill strong { color: var(--text); }
 .player-card {
   position: relative;
   overflow: hidden;
