@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Snake Clash PvP</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <main class="shell">
+    <section class="hero">
+      <div class="hero-copy">
+        <p class="eyebrow">Cozy local multiplayer</p>
+        <h1><span class="snake-mark" aria-hidden="true">🐍</span> Snake Clash PvP</h1>
+        <p class="subtitle">Two to four snakes share one room code. Eat snacks, grow longer, and keep three lives on the board.</p>
+      </div>
+      <div id="connectionStatus" class="status-pill">Disconnected</div>
+    </section>
+
+    <section id="joinPanel" class="panel join-panel">
+      <div class="join-copy">
+        <p class="eyebrow">Same code = same match</p>
+        <h2>Join a Snake Clash room</h2>
+        <p>Open this game in two to four tabs or devices, enter different names, and use the same room code.</p>
+      </div>
+
+      <form id="joinForm" autocomplete="off">
+        <label>
+          Player name
+          <input id="playerName" name="playerName" maxlength="20" placeholder="Your name" required />
+        </label>
+        <label>
+          Room code
+          <input id="roomCode" name="roomCode" maxlength="12" placeholder="ROOM1" required />
+        </label>
+        <button type="submit">Start playing</button>
+      </form>
+      <p id="joinError" class="error" aria-live="polite"></p>
+
+      <div class="how-it-works" aria-label="How it works">
+        <h3>How it works</h3>
+        <ol>
+          <li><strong>Share a room.</strong> Same code puts 2–4 players in one match.</li>
+          <li><strong>Grow longer.</strong> Eat orange snacks to increase score and length.</li>
+          <li><strong>Stay alive.</strong> Walls and bodies cost lives. Longest snake wins head clashes.</li>
+        </ol>
+      </div>
+    </section>
+
+    <section id="gamePanel" class="panel game-panel hidden">
+      <div class="topbar">
+        <div>
+          <p class="eyebrow">Room</p>
+          <h2 id="roomLabel">—</h2>
+        </div>
+        <div id="gameMessage" class="message">Waiting for another snake…</div>
+        <button id="restartButton" class="secondary hidden" type="button">Restart round</button>
+      </div>
+
+      <div id="scoreboard" class="scoreboard"></div>
+
+      <div id="waitingScreen" class="waiting hidden">
+        <div class="snake-loader" aria-hidden="true"><span></span><span></span><span></span></div>
+        <h2>Waiting for more snakes…</h2>
+        <p>Open 1–3 more tabs or devices and join with this same room code.</p>
+      </div>
+
+      <div class="canvas-wrap">
+        <canvas id="gameCanvas" width="960" height="660" aria-label="Snake Battle game canvas"></canvas>
+        <div id="countdownOverlay" class="countdown-overlay hidden" aria-live="polite">
+          <p id="countdownText" class="eyebrow">Get ready</p>
+          <div id="countdownNumber" class="countdown-number">3</div>
+        </div>
+        <div id="winnerOverlay" class="winner hidden">
+          <p class="eyebrow">Final snack count</p>
+          <h2 id="winnerTitle">Winner</h2>
+          <p id="winnerText"></p>
+          <button id="overlayRestartButton" type="button">Play again</button>
+        </div>
+
+        <div id="triviaOverlay" class="trivia-overlay hidden" aria-live="polite">
+          <div class="trivia-card">
+            <p class="trivia-label">⚡ Powerup contested!</p>
+            <p id="triviaQuestion" class="trivia-question"></p>
+            <div id="triviaOptions" class="trivia-options"></div>
+            <div class="trivia-timer-bar-wrap"><div id="triviaTimerBar" class="trivia-timer-bar"></div></div>
+            <p id="triviaTimer" class="trivia-timer">15s</p>
+            <p id="triviaResult" class="trivia-result hidden"></p>
+          </div>
+        </div>
+      </div>
+
+      <div class="controls-help"><span>Controls:</span> Arrow keys or WASD. Eat orange snacks, avoid walls, and don’t run into bodies.</div>
+    </section>
+  </main>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="game.js"></script>
+</body>
+</html>

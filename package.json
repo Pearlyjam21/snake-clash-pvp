@@ -1,0 +1,20 @@
+{
+  "name": "snake-clash-pvp",
+  "version": "1.0.0",
+  "description": "Local two-player Socket.io PvP Snake Battle game",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "test": "node tests/run-tests.js"
+  },
+  "keywords": ["snake", "pvp", "socket.io", "multiplayer", "canvas"],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.19.2",
+    "socket.io": "^4.7.5"
+  },
+  "devDependencies": {
+    "socket.io-client": "^4.7.5"
+  }
+}
