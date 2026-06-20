@@ -39,6 +39,11 @@ includesAll(css, [
   '.countdown-number',
   '.controls-card',
   '.control-pill',
+  '--board-max-width: 820px',
+  '--board-max-height: min(48vh, 480px)',
+  '.canvas-wrap { position: relative; max-width: var(--board-max-width); margin: 0 auto; }',
+  'max-height: var(--board-max-height)',
+  'body.in-game .hero',
   '@media (prefers-reduced-motion: reduce)'
 ], 'style.css');
 
@@ -50,6 +55,7 @@ includesAll(game, [
   'renderCountdown',
   'countdownOverlay',
   'requestAnimationFrame',
+  'document.body.classList.add(\'in-game\')',
   'You won the clash!'
 ], 'game.js');
 

@@ -33,7 +33,7 @@ const damagedPlayers = new Set();
 
 socket.on('connect', () => { connectionStatus.textContent = 'Connected'; connectionStatus.classList.add('online'); });
 socket.on('disconnect', () => { connectionStatus.textContent = 'Disconnected'; connectionStatus.classList.remove('online'); });
-socket.on('joined', ({ playerId, roomCode }) => { myPlayerId = playerId; roomLabel.textContent = roomCode; joinPanel.classList.add('hidden'); gamePanel.classList.remove('hidden'); joinError.textContent = ''; });
+socket.on('joined', ({ playerId, roomCode }) => { myPlayerId = playerId; roomLabel.textContent = roomCode; document.body.classList.add('in-game'); joinPanel.classList.add('hidden'); gamePanel.classList.remove('hidden'); joinError.textContent = ''; });
 socket.on('joinError', (message) => { joinError.textContent = message; });
 socket.on('gameState', (state) => {
   markLifeLosses(state);
