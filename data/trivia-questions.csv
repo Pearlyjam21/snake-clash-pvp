@@ -1,31 +1,31 @@
 id,question,option_a,option_b,option_c,option_d,correct_answer
-1,Which HTML element is used to define the main content of a document?,article,section,main,div,c
-2,What does the <!DOCTYPE html> declaration do?,Defines the page title,Specifies the HTML version,Links an external stylesheet,Creates a variable,b
-3,Which attribute is required for an <img> element to be valid?,class,alt,href,src,d
-4,What is the correct HTML element for inserting a line break?,<break>,<lb>,<newline>,<br>,d
-5,Which element is used to create an unordered list?,<ol>,<li>,<ul>,<list>,c
-6,What does the <a> element's href attribute specify?,The link text,The URL of the page being linked to,The element class,The image source,b
-7,Which HTML element defines the document's title that appears in the browser tab?,<meta>,<title>,<head>,<tab>,b
-8,What is the correct HTML for creating a hyperlink?,<a url="http://example.com">Example</a>,<a href="http://example.com">Example</a>,<link>http://example.com</link>,<hyperlink>http://example.com</hyperlink>,b
-9,Which element is used to define a table row?,<td>,<th>,<tr>,<table>,c
-10,What does the <thead> element represent?,A table cell,A table header section,A table row,A table footer,b
-11,Which attribute is used to provide alternative text for an image?,title,src,href,alt,d
-12,What is the correct HTML element for emphasized text?,<strong>,<italic>,<em>,<underline>,c
-13,Which element is used to define a navigation section?,<navigation>,<nav>,<menu>,<header>,b
-14,What does the <form> element's action attribute specify?,The form method,The URL to send form data to,The form encryption type,The form name,b
-15,Which HTML element is for marking up a paragraph?,<text>,<p>,<para>,<span>,b
-16,What does the <iframe> element do?,Displays an image,Embeds another document within the current page,Creates a form,Defines a variable,c
-17,Which attribute specifies that an input field must be filled out?,type="required",required,placeholder,validate,c
-18,What is the correct HTML for creating a checkbox input?,<input type="check">,<input type="checkbox">,checkbox,<input type="box">,b
-19,Which element is used to define a table header cell?,<th>,<td>,<tr>,<thead>,a
-20,What does the <footer> element typically contain?,The page logo,Copyright info and related links,The main navigation,The page title,b
-21,Which attribute is used to open a link in a new tab?,target="_self",target="_blank",rel="new",href="new",b
-22,What is the correct HTML for an ordered list?,<ul>,<li>,<ol>,<list>,c
-23,Which element defines a description list?,<dl>,<dd>,<dt>,<list>,a
-24,What does the <button> element's type attribute control?,The button color,The button text size,Whether it submits a form or just a button,The button width,c
-25,Which HTML element is for marking up strong importance?,<i>,<b>,<strong>,<em>,c
-26,What is the correct HTML for inserting a horizontal rule?,<line>,<hr>,<break>,<horizontal>,b
-27,Which element is used to define a section in a document?,<section>,<article>,<div>,<part>,a
-28,What does the alt attribute provide if an image cannot be loaded?,Animation,Color,Sets dimensions,Text alternative,d
-29,Which element defines a definition term in a description list?,<dl>,<dd>,<dt>,<li>,c
-30,What does the readonly attribute do on an input field?,Prevents the field from being focused,Prevents the field from being changed,Disables the field visually,Makes the field required,b
+HTML-01,What does HTML stand for?,HyperText Markup Language,HighText Machine Language,HyperTool Mark Language,HomeText Markup Language,a
+HTML-02,Which tag is used to create a heading?,<p>,<h1>,<img>,<br>,b
+HTML-03,Which tag is used to create a paragraph?,<p>,<head>,<title>,<body>,a
+HTML-04,Which tag is used to add an image?,<link>,<img>,<image>,<photo>,b
+HTML-05,Which tag is used to create a link?,<a>,<p>,<div>,<span>,a
+HTML-06,Which part of an HTML page contains the visible content?,<head>,<title>,<body>,<meta>,c
+HTML-07,Which tag creates a line break?,<br>,<hr>,<break>,<line>,a
+HTML-08,Which attribute is used to show the image source?,href,src,alt,style,b
+HTML-09,Which tag is used to create an ordered list?,<ul>,<li>,<ol>,<list>,c
+HTML-10,Which tag is used to create a table row?,<table>,<tr>,<td>,<th>,b
+CSS-01,What does CSS stand for?,Cascading Style Sheets,Computer Style Sheets,Creative Style System,Colorful Sheet Styles,a
+CSS-02,Which property changes text color?,font-size,background,color,text-style,c
+CSS-03,Which property changes the background color?,background-color,text-color,font-color,border-color,a
+CSS-04,Which CSS selector selects an element by class?,#className,.className,className,*className,b
+CSS-05,Which CSS selector selects an element by ID?,.idName,idName,#idName,*idName,c
+CSS-06,Which property changes the size of text?,font-size,text-color,font-weight,width,a
+CSS-07,Which property makes text bold?,font-style,font-weight,text-align,display,b
+CSS-08,Which property is used to center text?,text-align,align-text,center,justify-content,a
+CSS-09,Which value hides an element from the page layout?,display: none;,display: block;,display: flex;,display: inline;,a
+CSS-10,Which property adds space inside an element?,margin,padding,border,outline,b
+JS-01,Which language is mainly used to add interactivity to a webpage?,HTML,CSS,JavaScript,SQL,c
+JS-02,Which keyword is commonly used to create a variable?,var,image,style,link,a
+JS-03,Which symbol is used for comments on one line in JavaScript?,//,<!-- -->,#,**,a
+JS-04,Which method shows a message in a popup box?,console.log(),alert(),promptText(),show(),b
+JS-05,Which method prints text in the browser console?,alert(),document.write(),console.log(),print.console(),c
+JS-06,What is the result of 2 + 3 in JavaScript?,23,5,6,Error,b
+JS-07,Which value means true or false?,String,Number,Boolean,Array,c
+JS-08,Which brackets are used to make an array?,(),{},[],<>,c
+JS-09,Which keyword is used to create a function?,function,create,method,newFunction,a
+JS-10,Which operator is used to assign a value to a variable?,==,=,+,===,b
