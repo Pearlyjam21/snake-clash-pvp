@@ -122,4 +122,33 @@ function makeRoom(players) {
   assert.deepStrictEqual(state.powerup, room.powerup, 'public state should include powerup coordinates so clients can draw it');
 })();
 
+(function postRespawnWallCollisionCostsLifeImmediately() {
+  const player = makePlayer('wall', 0, _test.constants.GRID_WIDTH - 1, 11, 'right');
+  const other = makePlayer('other', 1, 24, 18, 'left');
+  const room = makeRoom([player, other]);
+  room.food = { x: 20, y: 20 };
+
+  _test.tickRoom(room);
+  assert.strictEqual(player.lives, 2, 'first wall collision should cost one life and respawn the player');
+  if (room.countdownTimer) {
+    clearInterval(room.countdownTimer);
+    room.countdownTimer = null;
+  }
+
+  room.status = 'playing';
+  room.countdown = null;
+  player.direction = 'right';
+  player.nextDirection = 'right';
+  player.snake = [
+    { x: _test.constants.GRID_WIDTH - 1, y: 11 },
+    { x: _test.constants.GRID_WIDTH - 2, y: 11 },
+    { x: _test.constants.GRID_WIDTH - 3, y: 11 },
+    { x: _test.constants.GRID_WIDTH - 4, y: 11 }
+  ];
+
+  _test.tickRoom(room);
+
+  assert.strictEqual(player.lives, 1, 'wall collision after respawn should cost a life immediately, not wait for graceTicks to expire');
+})();
+
 console.log('gameplay regression tests ok');

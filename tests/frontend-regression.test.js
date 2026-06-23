@@ -16,5 +16,8 @@ assert(!game.includes('if (activeTrivia?._answered) return;'), 'client should al
 assert.match(game, /querySelectorAll\('\.trivia-option'\)/, 'client should update selected trivia option styling when answer changes');
 assert(game.includes('instant speed boost'), 'trivia result copy should tell the winner the speed boost is immediate');
 assert(game.includes('⚡ Speed boost active'), 'scoreboard should label active speed boost clearly, not only show an icon');
+assert(game.includes('mobileControlButtons'), 'game.js should wire on-screen mobile arrow buttons');
+assert.match(game, /dataset\.direction/, 'mobile controls should read directions from data-direction attributes');
+assert.match(game, /emitDirection\(direction\)/, 'keyboard and mobile controls should share the same direction emit path');
 
 console.log('frontend regression tests ok');

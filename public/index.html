@@ -63,9 +63,16 @@
       <div id="scoreboard" class="scoreboard"></div>
 
       <div class="controls-card" aria-label="Game controls">
-        <span class="control-pill"><strong>Move:</strong> Arrow keys / WASD</span>
+        <span class="control-pill"><strong>Move:</strong> Arrow keys / WASD / mobile arrows</span>
         <span class="control-pill"><strong>Trivia:</strong> Change trivia answer before time runs out</span>
         <span class="control-pill"><strong>Boost:</strong> ⚡ means speed boost is active</span>
+      </div>
+
+      <div class="mobile-controls" aria-label="Mobile snake controls">
+        <button class="mobile-control-btn mobile-control-up" type="button" data-direction="up" aria-label="Move up">▲</button>
+        <button class="mobile-control-btn mobile-control-left" type="button" data-direction="left" aria-label="Move left">◀</button>
+        <button class="mobile-control-btn mobile-control-down" type="button" data-direction="down" aria-label="Move down">▼</button>
+        <button class="mobile-control-btn mobile-control-right" type="button" data-direction="right" aria-label="Move right">▶</button>
       </div>
 
       <div id="waitingScreen" class="waiting hidden">
@@ -99,7 +106,7 @@
         </div>
       </div>
 
-      <div class="controls-help"><span>Controls:</span> Arrow keys or WASD. Eat orange snacks, avoid walls, and don’t run into bodies.</div>
+      <div class="controls-help"><span>Controls:</span> Arrow keys, WASD, or the on-screen arrows. Eat orange snacks, avoid walls, and don’t run into bodies.</div>
     </section>
   </main>
 

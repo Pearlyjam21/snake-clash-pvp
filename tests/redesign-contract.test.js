@@ -26,6 +26,11 @@ includesAll(html, [
   'countdownNumber',
   'controls-card',
   'Arrow keys / WASD',
+  'mobile-controls',
+  'data-direction="up"',
+  'data-direction="down"',
+  'data-direction="left"',
+  'data-direction="right"',
   'Change trivia answer before time runs out'
 ], 'index.html');
 
@@ -39,6 +44,9 @@ includesAll(css, [
   '.countdown-number',
   '.controls-card',
   '.control-pill',
+  '.mobile-controls',
+  '.mobile-control-btn',
+  'touch-action: manipulation',
   '--board-max-width: 820px',
   '--board-max-height: min(48vh, 480px)',
   '.canvas-wrap { position: relative; max-width: var(--board-max-width); margin: 0 auto; }',

@@ -461,7 +461,7 @@ function tickRoom(room) {
     const eliminationMessage = eliminated.map((p) => `${p.name} is out`);
     room.message = [...lossMessage, ...eliminationMessage].join(' and ') + '.';
     if (respawning.length > 0) {
-      room.graceTicks = 30; // must survive the 3-second countdown (25 ticks at 120ms)
+      room.graceTicks = 0; // after the countdown, collisions must be active immediately
       startCountdown(room, 'respawn', 'Respawn in', () => {
         room.status = 'playing';
         room.message = 'Back on the board.';

@@ -185,6 +185,36 @@ button.secondary {
   font-weight: 700;
 }
 .control-pill strong { color: var(--text); }
+.mobile-controls {
+  display: grid;
+  grid-template-columns: repeat(3, 58px);
+  grid-template-areas:
+    ". up ."
+    "left down right";
+  justify-content: center;
+  gap: 9px;
+  margin: 0 auto 14px;
+  touch-action: manipulation;
+  user-select: none;
+}
+.mobile-control-btn {
+  width: 58px;
+  height: 52px;
+  padding: 0;
+  border-radius: 16px;
+  background: linear-gradient(180deg, #fff8ea, #f4dcc0);
+  color: var(--text);
+  border: 1.5px solid var(--border-strong);
+  box-shadow: 0 8px 16px rgba(80, 52, 21, 0.12), var(--button-inset);
+  font-size: 1.25rem;
+  line-height: 1;
+  touch-action: manipulation;
+}
+.mobile-control-btn:active { transform: translateY(1px) scale(0.96); }
+.mobile-control-up { grid-area: up; }
+.mobile-control-left { grid-area: left; }
+.mobile-control-down { grid-area: down; }
+.mobile-control-right { grid-area: right; }
 .player-card {
   position: relative;
   overflow: hidden;
